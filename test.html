@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container{
+            border: solid;
+            width: 300px;
+            height: 500px;
+
+            position: relative;
+        }
+
+        .bar{
+            height: 100px;
+            width: 100%;
+            border: solid;
+
+            margin-bottom: 10px;
+        }
+
+        #bar1{
+            background-color: red;
+        }
+
+        #bar2{
+            background-color: aqua;
+        }
+
+        #bar3{
+            background-color: greenyellow;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+
+    <script>
+        const container = document.getElementById("container");
+
+        let arrBar = [
+            `<div id="bar1" class="bar" draggable="true" data-index = "0"></div>`,
+            `<div id="bar2" class="bar" draggable="true" data-index = "1"></div>`,
+            `<div id="bar3" class="bar" draggable="true" data-index = "2"></div>`]
+
+
+        function displayBar(){            
+            container.innerHTML = "";
+
+            arrBar.forEach((arr)=> {
+                container.innerHTML += arr;
+            })
+        }
+
+        displayBar();
+
+        container.addEventListener("dragend", (e)=>{
+            let from = e.target;
+            if(from.dataset.index != undefined){
+                swapBar(from)
+                resetIndex();
+            }
+        })
+
+        let target;
+        container.addEventListener("dragover", (e)=>{
+            if(event.target.dataset.index){
+                target = event.target;
+                index = event.target.dataset.index
+            }
+        })
+
+        
+        let index;
+        function swapBar(drag){
+            const temp = arrBar[drag.dataset.index];
+            arrBar[drag.dataset.index] = arrBar[index];
+            arrBar[index] = temp;
+
+            displayBar()
+        }
+
+        function resetIndex(){
+            const allBar = document.querySelectorAll("#container div");
+
+            let i = 0
+            allBar.forEach((e)=>{
+                e.dataset.index = i;
+                i++;
+            })
+        }
+    </script>
+</body>
+</html>

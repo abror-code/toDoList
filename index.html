@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <div id="dark"></div>
+    <div id="container">
+        <div id="inner-container">
+            <nav id="category">
+                 <div class="category-button">All</div>
+                 <div class="category-button">Work</div>
+                 <div class="category-button">Work</div>
+                 <div class="category-button">Work</div>
+                 <div class="category-button">Work</div>
+                 <div class="category-button">Study</div>
+                 <div class="category-button">Work</div>
+                 <div class="category-button">Work</div>
+            </nav>
+            <div id="mid-container">
+                <div class="task-container">
+                    <h4>Today</h4>
+                    <div id="today-task">
+                        <div class="task">
+                            <input type="checkbox" name="Study" id="Study">
+                            <p>Belajar</p>
+                        </div>
+                    </div>
+                    <h4>Completed Today</h4>
+                    <div id="completed-task">
+                        <div class="task">
+                            <input type="checkbox" name="Study" id="Study">
+                            <p>Olahrga</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="add-show"></button>
+            <div id="add-container">
+                <input type="text" id="test">
+                <div>
+                    <button id="change-container">
+                        <span>No category</span>
+                        
+                        <div>
+                            <div>No Category</div>
+                            <div>Work</div>
+                            <div>Study</div>
+                            <div>Wishlist</div>
+                            <div id="create-category"><span>+</span> Create New</div>
+                        </div>
+                    </button>
+                    <button id="calendar">calendar</button>
+                </div>
+
+                <div id="create-category-container">
+                    <h3>Create new category</h3>
+                    <input type="text">
+                    <div>
+                        <h4 class="cancel">Cancel</h4>
+                        <h4 class="save">Save</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav id="nav-bar"></nav>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
