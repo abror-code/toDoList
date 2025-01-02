@@ -42,9 +42,10 @@
         const container = document.getElementById("container");
 
         let arrBar = [
-            `<div id="bar1" class="bar" draggable="true" data-index = "0"></div>`,
-            `<div id="bar2" class="bar" draggable="true" data-index = "1"></div>`,
-            `<div id="bar3" class="bar" draggable="true" data-index = "2"></div>`]
+            `<div id="bar1" class="bar" draggable="true" data-index = "0">Halo Apa kabar</div>`,
+            `<div id="bar2" class="bar" draggable="true" data-index = "1">Halo Apa Kabir</div>`,
+            `<div id="bar3" class="bar" draggable="true" data-index = "2"></div>`,
+            `<div id="bar4" class="bar" draggable="true" data-index = "3"></div>`]
 
 
         function displayBar(){            
@@ -59,8 +60,9 @@
 
         container.addEventListener("dragend", (e)=>{
             let from = e.target;
-            if(from.dataset.index != undefined){
-                swapBar(from)
+            if(from.dataset.index != undefined && from.dataset.index != index){
+                console.log(from.dataset.index)
+                swapBar(e)
                 resetIndex();
             }
         })
@@ -75,10 +77,33 @@
 
         
         let index;
-        function swapBar(drag){
-            const temp = arrBar[drag.dataset.index];
-            arrBar[drag.dataset.index] = arrBar[index];
-            arrBar[index] = temp;
+        function swapBar(e){
+            let arrBaru = []
+            
+            for(let i = 0; i<arrBar.length; i++){
+                
+                if(e.offsetY > 0){
+                    if(i == e.target.dataset.index){
+                        continue;
+                    }
+                    
+                    arrBaru.push(arrBar[i])
+                    if(i == index){
+                        arrBaru[index] = arrBar[e.target.dataset.index]
+                    }
+                }else{
+                    if(i == index){
+                        arrBaru[index] = arrBar[e.target.dataset.index]
+                    }
+
+                    if(i == e.target.dataset.index){
+                        continue;
+                    }
+                    arrBaru.push(arrBar[i])
+                }
+            }
+
+            arrBar = arrBaru;
 
             displayBar()
         }
