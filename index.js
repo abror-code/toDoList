@@ -2,7 +2,6 @@ document.addEventListener("dblclick", (e)=> {
     document.documentElement.requestFullscreen(); 
 })
 
-
 //Untuk memuncukan container add task
 const addShow = document.getElementById("add-show");
 const addContainer = document.getElementById("add-container");
@@ -19,6 +18,7 @@ addShow.addEventListener("click", function(){
 
 let taskList = getLocalStorage("localTask") || [];
 let completedList = getLocalStorage("localCompleted") || [];
+let taskCategory = getLocalStorage("localTaskCategory") || [];
 
 
 
@@ -27,10 +27,15 @@ let completedList = getLocalStorage("localCompleted") || [];
 const inputTask = document.getElementById("input-task");
 const addTask = document.getElementById("add-task")
 
+
 addTask.addEventListener("click", function(e){
+
+    // isAdd == true maka tambah task baru
+    // else maka edit task
     if(isAdd){
-        createTaskDiv(inputTask.value, taskList.length);
+        createTaskDiv(inputTask.value, taskList.length, categoryPreview.innerHTML);
         taskList.push(inputTask.value);
+        taskCategory.push(categoryPreview.innerHTML);
     }else{
         taskList[whoOpenOption] = inputTask.value;
         taskDivList[whoOpenOption].querySelector("p").innerHTML = inputTask.value;
@@ -68,7 +73,7 @@ let whoOpenOption;
 
 //Membuat taskDiv
 let taskDivList = [];
-function createTaskDiv(value, index){
+function createTaskDiv(value, index, taskCategoryParam){
     const divTask = document.createElement("div");
     divTask.setAttribute("class", "task");
     divTask.setAttribute("data-tindex", `${index}`);
@@ -77,6 +82,9 @@ function createTaskDiv(value, index){
     <input type="checkbox">
     <p>${value}</p>`
     
+    divTask.classList.add("All");
+    divTask.classList.add(taskCategoryParam);
+
     taskDivList.push(divTask);
 
     // Completed Task
@@ -113,7 +121,7 @@ function createTaskDiv(value, index){
 
 //create taskDiv pertama kali
 for(let i = 0; i < taskList.length; i++){
-    createTaskDiv(taskList[i], i);
+    createTaskDiv(taskList[i], i, taskCategory[i]);
 }
 
 //Option Task
@@ -142,11 +150,67 @@ editTask.addEventListener("click", function(){
     isAdd = false;
 })
 
-//change or add category
+
+const categoryPreview =  document.querySelector("#change-container span");
 const changeCategory = document.getElementById("change-container");
+const categoryContainer = document.querySelector("#change-container div");
 
-categoryContainer = document.querySelector("#change-container div");
+let categoryValueList = getLocalStorage("localCategory") || [];
+let categoryDivList = [];
+let categoryOptionList = [];
+const categoryNav = document.getElementById("category");
 
+function createCategory(value){
+    const categoryDiv = document.createElement("div");
+    categoryDiv.setAttribute("class", "category-button");
+    categoryDiv.innerHTML = value;
+
+    categoryDivList.push(categoryDiv);
+
+    const categoryOption = document.createElement("div");
+    categoryOption.innerHTML = value;
+    categoryOptionList.push(categoryOption);
+
+    //TODO: Buat Event
+    categoryOption.addEventListener("click", function(e){
+        e.stopPropagation();
+        categoryPreview.innerHTML = value;
+        categoryContainer.style.display = "none";
+    })
+    displayCategory();
+}
+
+// Initial Category
+const allCategory = document.createElement("div");
+allCategory.setAttribute("class", "category-button");
+allCategory.innerHTML = "All";
+categoryDivList.push(allCategory);
+
+const optionCreateCategory = document.createElement("div");
+optionCreateCategory.setAttribute("id", "create-category")
+optionCreateCategory.innerHTML = "<span>+</span> Create New";
+categoryOptionList.push(optionCreateCategory);
+displayCategory()
+
+categoryValueList.forEach(function(i){
+    createCategory(i)
+})
+
+function displayCategory(){
+    categoryNav.innerHTML = "";
+    categoryDivList.forEach(function(i){
+        categoryNav.appendChild(i);
+    })
+
+    categoryContainer.innerHTML = "";
+    categoryOptionList.forEach(function(i){
+        categoryContainer.insertBefore(i, categoryContainer.firstChild);
+    })
+}
+
+    
+
+//change or add category
 
 changeCategory.addEventListener("click", function(){
     categoryContainer.style.display = "flex";
@@ -168,22 +232,32 @@ category.forEach(function(i){
 
 const addCategory = document.getElementById("create-category");
 const createCategoryContainer = document.getElementById("create-category-container");
+const categoryInput = document.querySelector(`#create-category-container input[type='text']`);
 const cancelCreateCategory = document.querySelector("#create-category-container div .cancel");
-
-cancelCreateCategory.addEventListener("click", function(){
-    createCategoryContainer.style.display = "none";
-})
+const saveCreateCategory = document.querySelector("#create-category-container div .save");
 
 addCategory.addEventListener("click", function(){
     createCategoryContainer.style.display = "block";
 })
 
+cancelCreateCategory.addEventListener("click", function(){
+    createCategoryContainer.style.display = "none";
+})
+
+saveCreateCategory.addEventListener("click", function(){
+    createCategory(categoryInput.value);
+    categoryValueList.push(categoryInput.value);
+    
+    categoryInput.value = "";
+    createCategoryContainer.style.display = "none";
+})
 
 //Untuk display none
 document.addEventListener("click", function(e){
-    function checkTarget(i){
-        return !i.contains(e.target);
-    }
+    // ! Kemungkinan tidak dipakai
+    // function checkTarget(i){
+    //     return !i.contains(e.target);
+    // }
 
     if(createCategoryContainer.style.display == "none"){
         if(!addContainer.contains(e.target) && e.target != addShow && e.target !=editTask){
@@ -207,7 +281,7 @@ document.addEventListener("click", function(e){
     }
 })
 
-//Untuk menyimpan data
+//Untuk mendapatkan data daru local storage
 function getLocalStorage(key){
     if(localStorage.getItem(key) != null && localStorage.getItem(key) != undefined){
         
@@ -216,7 +290,7 @@ function getLocalStorage(key){
 
     return null;
 }
-//Untuk menyimpan data
+//Untuk menyimpan data dari local storage
 addEventListener("beforeunload", function(e){
     
     taskDivList = taskDivList.filter(function(item){
@@ -228,8 +302,16 @@ addEventListener("beforeunload", function(e){
 
     window.localStorage.removeItem("localTask");
     window.localStorage.removeItem("localCompleted");
+    window.localStorage.removeItem("localTaskCategory");
+    window.localStorage.removeItem("localCategory");
+
     if(taskList.length != 0){
         localStorage.setItem("localTask", JSON.stringify(taskList));
         localStorage.setItem("localCompleted", JSON.stringify(completedList));
-    }  
+        localStorage.setItem("localTaskCategory", JSON.stringify(taskCategory));
+    }
+
+    if(categoryValueList.length != 0){
+        localStorage.setItem("localCategory", JSON.stringify(categoryValueList));
+    }
 })
