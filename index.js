@@ -68,6 +68,25 @@ function displayTask(){
     }
 }
 
+
+//Hide task
+function hideTask(category){
+    if(category == "All"){
+        taskDivList.forEach(function(i){
+            i.style.display = "flex";
+        })
+    }else{
+        taskDivList.forEach(function(i){
+            if(i.dataset.category == category){
+                i.style.display = "flex";
+            }else{
+                i.style.display = "none";
+            }
+        })
+    }
+    
+}
+
 const optionTask = document.getElementById("option-task");
 let whoOpenOption;
 
@@ -83,7 +102,7 @@ function createTaskDiv(value, index, taskCategoryParam){
     <p>${value}</p>`
     
     divTask.classList.add("All");
-    divTask.classList.add(taskCategoryParam);
+    divTask.setAttribute("data-category", taskCategoryParam);
 
     taskDivList.push(divTask);
 
@@ -163,15 +182,18 @@ const categoryNav = document.getElementById("category");
 function createCategory(value){
     const categoryDiv = document.createElement("div");
     categoryDiv.setAttribute("class", "category-button");
+    categoryDiv.setAttribute("data-category", value);
     categoryDiv.innerHTML = value;
 
+    categoryDiv.addEventListener("click", function(){
+        hideTask(value);
+    })
     categoryDivList.push(categoryDiv);
 
     const categoryOption = document.createElement("div");
     categoryOption.innerHTML = value;
     categoryOptionList.push(categoryOption);
 
-    //TODO: Buat Event
     categoryOption.addEventListener("click", function(e){
         e.stopPropagation();
         categoryPreview.innerHTML = value;
@@ -184,6 +206,7 @@ function createCategory(value){
 const allCategory = document.createElement("div");
 allCategory.setAttribute("class", "category-button");
 allCategory.innerHTML = "All";
+allCategory.onclick = function(){hideTask("All")};
 categoryDivList.push(allCategory);
 
 const optionCreateCategory = document.createElement("div");
